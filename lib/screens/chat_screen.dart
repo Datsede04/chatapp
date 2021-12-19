@@ -1,4 +1,7 @@
+import 'package:chatapp/widgets/chat/message.dart';
+import 'package:chatapp/widgets/chat/new_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -7,37 +10,41 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.
-            collection("chat/6Cdckx0sjMg4cnbL7ek2/message")
-            .snapshots(),
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return const Center(
-              child: CircularProgressIndicator()
-              );
-          }
+      appBar: AppBar(
+        title: Text("chat app"),
+        actions: [
+          DropdownButton(
+            icon: const Icon(Icons.more_vert),
+            items: [
+              DropdownMenuItem(child: Container(
+               child: Row(
+                children: const <Widget>[
+                  Icon(Icons.exit_to_app),
+                  SizedBox(width: 8,),
+                  Text("Logout")
+                ], 
+              ),
+            ),
+          value: "logout",
+            )
+            ],
 
-          final documents = snapshot.data!.docs;
-          return snapshot.hasData? ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (ctx,index)=>  Container(
-              padding: const EdgeInsets.all(10),
-              child: Text(documents[index]['text']),
-             )
-            ):
-            const Center(
-              child:Text("No data")
-            );
-        }
+           onChanged: (itemIdentifier){
+             if(itemIdentifier == 'logout'){
+               FirebaseAuth.instance.signOut();
+             }
+           }, 
+            )
+          ],
       ),
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            FirebaseFirestore.instance.collection("chat/6Cdckx0sjMg4cnbL7ek2/message").
-            add({"text":"The button have been clicked"});
-              }
-            ) 
+      body: Column(
+        children: const <Widget>[
+         Expanded(
+           child: Message()
+           ),
+         NewMessage(),  
+        ],
+      ),
          );
         }
   }
