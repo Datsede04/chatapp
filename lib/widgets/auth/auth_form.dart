@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:chatapp/widgets/picker/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -9,6 +12,7 @@ class AuthForm extends StatefulWidget {
      String email,
      String password,
      String username,
+     File userImage,
      bool isLogin,
      BuildContext ctx
    ) submfn;
@@ -23,17 +27,31 @@ class _AuthFormState extends State<AuthForm> {
    String _username ='';
    String _useremail='';
    String _userpassword=''; 
+   File ?_userImageFile;
+
+  void _pickedImage(File image){
+        _userImageFile= image;
+  }
 
    void _trySubmiti(){
       final isValid = _formKey.currentState!.validate();
       FocusScope.of(context).unfocus(); //to close the keybore 
       
+      if(_userImageFile == null && !_isLogin ){
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("please select image"),
+                duration: Duration(milliseconds: 300),
+              ));
+        return;
+      }
+
       if(isValid){
         _formKey.currentState!.save();
         widget.submfn(
-         _useremail,
+         _useremail.trim(),
          _userpassword.trim(),
          _username.trim(),
+         _userImageFile!,
          _isLogin,
          context
         );
@@ -54,6 +72,7 @@ class _AuthFormState extends State<AuthForm> {
                child: Column(
                mainAxisSize: MainAxisSize.min,
                children: [
+                 if(!_isLogin) UserImagePicker(_pickedImage),
                   TextFormField(
                     key: const ValueKey("email"),
                     validator:(value){
@@ -92,7 +111,7 @@ class _AuthFormState extends State<AuthForm> {
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(labelText: "Passwor"),
+                    decoration: const InputDecoration(labelText: "Password"),
                     obscureText: true,
                      onSaved: (value){
                         _userpassword =value!;
