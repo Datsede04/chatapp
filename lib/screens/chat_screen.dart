@@ -22,10 +22,13 @@ class _ChatScreenState extends State<ChatScreen> {
         title: const Text("chat app"),
         actions: [
           DropdownButton(
+            underline: Container(),
             icon: const Icon(Icons.more_vert),
             items: [
-              DropdownMenuItem(child: Container(
-               child: Row(
+              DropdownMenuItem(
+                
+                child: Container(
+                child: Row(
                 children: const <Widget>[
                   Icon(Icons.exit_to_app),
                   SizedBox(width: 8,),
