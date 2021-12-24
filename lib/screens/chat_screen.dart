@@ -1,10 +1,19 @@
 import 'package:chatapp/widgets/chat/message.dart';
 import 'package:chatapp/widgets/chat/new_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
    ChatScreen();
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,4 +55,4 @@ class ChatScreen extends StatelessWidget {
       ),
          );
         }
-  }
+}
